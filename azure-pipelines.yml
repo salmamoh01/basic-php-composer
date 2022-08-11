@@ -4,9 +4,9 @@ trigger:
 
 variables:
   # Azure Resource Manager connection created during pipeline creation
-  azureSubscription: 'subscription-id'
+  azureSubscription: '9816b680-f08a-43fe-ac4c-dc5da528dc6a'
   # Web app name
-  webAppName: 'web-app-name'
+  webAppName: 'WebApp0214'
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
   # Environment name
@@ -58,7 +58,7 @@ stages:
   jobs:
   - deployment: DeploymentJob
     pool:
-      vmImage: $(vmImageName)
+      Default
     environment: $(environmentName)
     strategy:
       runOnce:
