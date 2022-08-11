@@ -15,39 +15,23 @@ variables:
   rootFolder: $(System.DefaultWorkingDirectory)
 
 stages:
-- stage: Build
-  displayName: Build stage
-  variables:
-    phpVersion: '7.3'
+- stage: Deploy
+  displayName: 'Deploy Web App'
+  dependsOn: Build
+  condition: succeeded()
   jobs:
-  - job: BuildJob
+  - deployment: DeploymentJob
     pool:
-      Default
-    steps:
-    # - script: |
-    #     sudo update-alternatives --set php /usr/bin/php$(phpVersion)
-    #     sudo update-alternatives --set phar /usr/bin/phar$(phpVersion)
-    #     sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpVersion)
-    #     sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpVersion)
-    #     sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
-    #     php -version
-    #   workingDirectory: $(rootFolder)
-    #   displayName: 'Use PHP version $(phpVersion)'
-
-    # - script: composer install --no-interaction --prefer-dist
-    #   workingDirectory: $(rootFolder)
-    #   displayName: 'Composer install'
-
-    - task: ArchiveFiles@2
-      displayName: 'Archive files'
-      inputs:
-        rootFolderOrFile: '$(rootFolder)'
-        includeRootFolder: false
-        archiveType: zip
-        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-        replaceExistingArchive: true
-
-    - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-      displayName: 'Upload package'
-      artifact: drop
-
+      vmImage: $(vmImageName)
+    environment: $(environmentName)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebApp@1
+            displayName: 'Deploy Azure Web App'
+            inputs:
+              azureSubscription: $(azureSubscription)
+              appName: $(webAppName)
+              appType: webApp
+              package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
