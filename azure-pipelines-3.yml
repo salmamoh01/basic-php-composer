@@ -38,8 +38,8 @@ stages:
     #   displayName: 'Composer install'
     - script: composer install --no-interaction --prefer-dist
       displayName: 'composer install'
-    - script: ./phpunit
-      displayName: 'Run tests with phpunit'
+    # - script: ./phpunit
+    #   displayName: 'Run tests with phpunit'
 
     - task: ArchiveFiles@2
       displayName: 'Archive files'
