@@ -58,7 +58,7 @@ stages:
   jobs:
   - deployment: DeploymentJob
     pool:
-      Deploy
+      Default
     environment: $(environmentName)
     strategy:
       runOnce:
